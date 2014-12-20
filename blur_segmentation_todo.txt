@@ -1,0 +1,8 @@
+todo
+
+x blur E
+- make example instruction images
+- name div tags
+- set list of images
+- change submit button to 'next' when not finished with the 20 images
+

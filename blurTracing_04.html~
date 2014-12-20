@@ -1,0 +1,182 @@
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://timbrady.org/turk/TimTurkTools.js"></script>
+ 
+ <script>
+// global tracing variables
+var tracingX = []; 
+var tracingY = [];
+
+currentTrial = 1;
+
+// document ready
+$(document).ready(function () {
+//    initialize("canvas" + currentTrial, "im" + currentTrial, currentTrial);
+
+//    initialize("canvas2", "im2");
+//    initialize("canvas3", "im3");
+//    initialize("canvas4", "im4");
+//   initialize("canvas5", "im5");
+//    initialize("canvas6", "im6");
+//    initialize("canvas7", "im7");
+//    initialize("canvas8", "im8");
+//   initialize("canvas9", "im9");
+//    initialize("canvas10", "im10");
+	$("#submitButton").hide();
+});
+
+// works out the X, Y position of the click inside the canvas from the X, Y position on the page
+function getPosition(mouseEvent, sigCanvas) {
+    var x, y;
+    if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+        x = mouseEvent.pageX;
+        y = mouseEvent.pageY; } 
+    else {
+        x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+        y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop; }
+return { X: x - sigCanvas.offsetLeft, Y: y - sigCanvas.offsetTop }; }
+ 
+function initialize(can, im, which) {
+// get references to the canvas element as well as the 2D drawing context
+
+	if (which >= 10) {
+		$("#submitButton").show();
+	}
+	else {
+ 	$("#page" + which).show();
+	// $(can).show();
+    var sigCanvas = document.getElementById(can);
+    var context = sigCanvas.getContext("2d");
+    context.strokeStyle = 'White';
+
+    var img = document.getElementById(im);
+    img.onload = function () { context.drawImage(img, 0, 0); }
+    // start drawing when the mousedown event fires, and attach handlers to
+    // draw a line to wherever the mouse moves to
+    $(sigCanvas).mousedown(function (mouseEvent) {
+        var position = getPosition(mouseEvent, sigCanvas);
+        context.moveTo(position.X, position.Y);
+        context.beginPath();  
+        // attach event handlers
+        $(this).mousemove(function (mouseEvent) {
+            drawLine(mouseEvent, sigCanvas, context);
+            }).mouseup(function (mouseEvent) {
+            finishDrawing(mouseEvent, sigCanvas, context);
+            }).mouseout(function (mouseEvent) {
+            finishDrawing(mouseEvent, sigCanvas, context);});
+        });
+    }  
+}
+      
+// draws a line to the x and y coordinates of the mouse event inside
+// the specified element using the specified context
+function drawLine(mouseEvent, sigCanvas, context) {
+    var position = getPosition(mouseEvent, sigCanvas);
+    // tacingX and tracingY global variables -- added
+    tracingX.push(position.X);
+    tracingY.push(position.Y);            
+    
+         
+    context.lineTo(position.X, position.Y);
+    context.stroke();
+    context.lineWidth = 5;
+}
+ 
+/** draws a line from the last coordiantes in the path to the finishing coordinates and unbind any event handlers which need to be preceded by the mouse down event **/
+function finishDrawing(mouseEvent, sigCanvas, context) {
+// draw the line to the finishing coordinates
+    drawLine(mouseEvent, sigCanvas, context);
+    context.closePath();
+    
+    //push -1, -1 to indicate end of trace
+    tracingX.push(-1*currentTrial);
+    tracingY.push(-1*currentTrial);                  
+
+    console.log(tracingX);
+    console.log(tracingY);   
+    // unbind any events which could draw
+    $(sigCanvas).unbind("mousemove")
+                .unbind("mouseup")
+                .unbind("mouseout");  
+    //$(sigCanvas).toggle();            
+    NextTrial();
+    //$(sigCanvas).fadeOut;
+    //context.clearRect(0,0, sigCanvas.width, sigCanvas.height);
+}
+
+function NextTrial() {
+    // $("#page" + currentTrial).hide();
+    // $('canvas:nth-of-type(' + currentTrial ')').remove();
+    currentTrial++;
+	initialize("canvas" + currentTrial, "im" + currentTrial, currentTrial);
+}
+
+</script>
+  
+<style>
+body { 
+	font-family: Arial;
+}
+
+.page {
+	margin-top: 0px;
+}  
+
+.nextLink {
+}
+
+</style>
+
+    
+<div class="page" id="page1">
+ <a href="javascript:initialize('canvas1', 'im1', 1);" id="startTrial"></a>
+<img id="im1" src="1.png" width="0" height="0">
+<canvas id="canvas1" width="512" height="512"></canvas>
+</div>
+
+<div class="page" id="page2">
+<img id="im2" src="2.png" width="0" height="0">
+<canvas id="canvas2" width="512" height="517"></canvas>
+</div>
+
+<div class="page" id="page3">
+<img id="im3" src="3.png" width="0" height="0">
+<canvas id="canvas3" width="512" height="512"></canvas>
+</div>
+
+<div class="page" id="page4">
+<img id="im4" src="4.png" width="0" height="0">
+<canvas id="canvas4" width="512" height="506"></canvas>
+</div>
+
+<div class="page" id="page5">
+<img id="im5" src="5.png" width="0" height="0">
+<canvas id="canvas5" width="512" height="341"></canvas>
+</div>
+
+<div class="page" id="page6">
+<img id="im6" src="6.png" width="0" height="0">
+<canvas id="canvas6" width="512" height="534"></canvas>
+</div>
+
+<div class="page" id="page7">
+<img id="im7" src="7.png" width="0" height="0">
+<canvas id="canvas7" width="512" height="384"></canvas>
+</div>
+
+<div class="page" id="page8">
+<img id="im8" src="8.png" width="0" height="0">
+<canvas id="canvas8" width="512" height="351"></canvas>
+</div>
+
+<div class="page" id="page9">
+<img id="im9" src="9.png" width="0" height="0">
+<canvas id="canvas9" width="512" height="769"></canvas>
+</div>
+
+<div class="page" id="page10">
+<img id="im10" src="10.png" width="0" height="0">
+<canvas id="canvas10" width="512" height="384"></canvas>
+</div>
+
+<input type="submit" id="submitButton">
+
